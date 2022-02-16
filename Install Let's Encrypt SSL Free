@@ -1,0 +1,8 @@
+sudo snap install --classic certbot 
+
+Apache 
+sudo certbot --apache 
+
+Nginx 
+sudo certbot --nginx 
+
