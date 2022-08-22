@@ -1,0 +1,45 @@
+	<VirtualHost _default_:443>
+    		ServerName example.com
+    		ServerAlias www.example.com  
+			DocumentRoot /var/www/html/public
+			<Directory /var/www/html/public>
+				Options all
+				AllowOverride all      
+			</Directory>
+
+    		SSLEngine on
+    		SSLCertificateFile "/etc/ssl/example.com/origin_cetificate.pem"
+    		SSLCertificateKeyFile "/etc/ssl/example.com/private_key.pem"
+    		SSLVerifyClient require
+    		SSLVerifyDepth 1
+    		SSLCACertificateFile "/etc/ssl/example.com/cloudflare.pem"
+
+
+    		CustomLog ${APACHE_LOG_DIR}/access.log combined
+    		ErrorLog ${APACHE_LOG_DIR}/error.log
+
+			<FilesMatch \.php$>
+				# 2.4.10+ can proxy to unix socket
+				SetHandler "proxy:unix:/run/php/php7.4-fpm.sock|fcgi://localhost"
+			</FilesMatch>
+
+
+    		<FilesMatch "\.ph(p[3-5]?|tml)$">
+        		SetHandler application/x-httpd-php
+    		</FilesMatch>
+    		<FilesMatch "\.phps$">
+        		SetHandler application/x-httpd-php-source
+    		</FilesMatch>
+	</VirtualHost>
+  
+  
+  
+sudo a2enmod ssl
+
+sudo a2enmod headers
+
+sudo a2enconf ssl-params
+
+sudo a2ensite default-ssl 
+
+sudo systemctl restart apache2
