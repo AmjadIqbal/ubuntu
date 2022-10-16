@@ -1,0 +1,6 @@
+CREATE USER 'dev'@'localhost' IDENTIFIED WITH mysql_native_password BY 'P9|(uEOWL=AMK]@H';
+
+GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'dev'@'localhost' WITH GRANT OPTION;
+
+// Grant master permission
+GRANT ALL PRIVILEGES ON *.* TO 'dev'@'localhost' WITH GRANT OPTION;
