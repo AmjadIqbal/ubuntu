@@ -40,8 +40,12 @@ ExecStart=/home/amjad/env/teton/bin/gunicorn --workers 3 --bin unix:peak.sock -m
 [Install]
 WantedBy=multi-user.target
 -----------------------------------
+sudo systemctl start peak
 
 sudo systemctl daemon-reload
+
+sudo systemctl enable peak
+
 
 Last step is to configure nginx to work on port 80 simple bypassing proxy, Edit your defualt domain config  file
 --------------------------------------------- 
