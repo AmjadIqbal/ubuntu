@@ -1,0 +1,56 @@
+setup python 
+
+apt install python3.10-venv
+
+python3 -m venv ~/env/teton  (teton is your environement name)
+
+source ~/env/teton/bin/activate ( activate your environment )
+
+pip install flask
+
+create file wsgi.py
+---------------------------
+from peak import app
+
+if __name__ == '__main__':
+  app.run()
+---------------------------
+
+pip install gunicorn
+
+
+deactivate ( this command will turn off python virtual environment )
+
+Now we need to create service file which will run our wsgi python as a services in background
+
+nano /etc/systemd/system/peak.service
+
+-----------------------------
+[Unit]
+Description=Gunicorn instance to sere peak Flask app
+After=network.target
+
+[Service]
+User=amjad
+Group=www-data
+WorkingDirectory=/home/amjad/web/flask
+Environment="PATH=/home/amjad/teton/bin"
+ExecStart=/home/amjad/env/teton/bin/gunicorn --workers 3 --bin unix:peak.sock -m 007 wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+-----------------------------------
+
+sudo systemctl daemon-reload
+
+Last step is to configure nginx to work on port 80 simple bypassing proxy, Edit your defualt domain config  file
+--------------------------------------------- 
+ location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://unix:/home/amjad/web/flask/peak.sock;
+   }
+----------------------------------------------
+ systemctl restart nginx
