@@ -1,0 +1,3 @@
+sudo ufw deny out 25
+
+we have noticed contabo user experience port 25 outgoing connection used, which should be fixed by running above command
